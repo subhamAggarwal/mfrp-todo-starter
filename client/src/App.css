@@ -1,0 +1,77 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family:
+        system-ui,
+        -apple-system,
+        Segoe UI,
+        Roboto,
+        sans-serif;
+    background: #fafafa;
+    color: #1f2937;
+}
+.container {
+    max-width: 480px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+h1 {
+    margin-top: 0;
+}
+form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+input[type='text'],
+input:not([type]) {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+button {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 0;
+    border-radius: 4px;
+    background: #2563eb;
+    color: #fff;
+}
+button.remove {
+    background: transparent;
+    color: #6b7280;
+    padding: 0 8px;
+    font-size: 18px;
+}
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eef0f3;
+}
+li label {
+    flex: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+li label.done {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+.error {
+    color: crimson;
+}
