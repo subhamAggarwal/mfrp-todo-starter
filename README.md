@@ -57,9 +57,17 @@ client/
    npm run dev
    ```
 
-4. Run visible tests:
+4. Run visible tests (backend + frontend):
    ```bash
-   .venv/bin/pytest server/tests -v
+   bash run-visible-tests.sh
+   ```
+   Or run individually:
+   ```bash
+   # Backend
+   cd server && .venv/bin/pytest tests -v
+
+   # Frontend
+   cd client && npm test
    ```
 
 ## What to implement

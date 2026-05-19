@@ -15,6 +15,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.29.0",
+        "@babel/plugin-syntax-import-meta": "^7.10.4",
         "@babel/preset-env": "^7.29.5",
         "@babel/preset-react": "^7.28.5",
         "@testing-library/jest-dom": "^6.9.1",
@@ -27,5 +28,25 @@
         "jest-environment-jsdom": "^29.7.0",
         "msw": "^2.14.5",
         "vite": "^5.4.2"
+    },
+    "jest": {
+        "testTimeout": 30000,
+        "testEnvironment": "<rootDir>/src/test/jsdom-fetch-environment.js",
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/test/setup.js"
+        ],
+        "testMatch": [
+            "<rootDir>/src/**/*.test.jsx"
+        ],
+        "transform": {
+            "^.+\\.(js|jsx|mjs)$": "babel-jest"
+        },
+        "transformIgnorePatterns": [
+            "node_modules/(?!(rettime|msw|@mswjs|@open-draft|is-node-process|outvariant|strict-event-emitter|headers-polyfill|@bundled-es-modules|until-async)/)"
+        ],
+        "moduleNameMapper": {
+            "^msw/node$": "<rootDir>/node_modules/msw/lib/node/index.js",
+            "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+        }
     }
 }
