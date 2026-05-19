@@ -89,7 +89,7 @@ def app(mongod):
 async def client(app):
     import httpx
     async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app, lifespan="off"),
+        transport=httpx.ASGITransport(app=app),
         base_url="http://test",
     ) as ac:
         yield ac
