@@ -79,14 +79,19 @@ def mongod():
 def app(mongod):
     import sys
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-    from app import create_app
-    return create_app()
+    from app import create_app, connect, disconnect
+    connect(mongod)
+    yield create_app()
+    disconnect()
 
 
 @pytest.fixture
 async def client(app):
     import httpx
-    async with httpx.AsyncClient(app=app, base_url="http://test") as ac:
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app, lifespan="off"),
+        base_url="http://test",
+    ) as ac:
         yield ac
 
 

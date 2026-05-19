@@ -13,8 +13,10 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -37,10 +39,11 @@ def connect(uri: Optional[str] = None):
 
 def disconnect():
     """Disconnect from MongoDB."""
-    global _client
+    global _client, _db
     if _client:
         _client.close()
         _client = None
+    _db = None
 
 
 def get_todos_collection() -> Collection:
@@ -113,6 +116,10 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        return JSONResponse(status_code=400, content={"detail": exc.errors()})
 
     @app.get("/api/health")
     def health():
