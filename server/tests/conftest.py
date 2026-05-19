@@ -3,6 +3,7 @@
 Uses mongodb-memory-server (via pymongo) or an in-memory mongod.
 """
 
+import glob
 import os
 import subprocess
 import tempfile
@@ -10,6 +11,16 @@ import time
 
 import pytest
 from pymongo import MongoClient
+
+
+def _find_mongod() -> str | None:
+    """Discover any pre-baked mongod binary in the cache directory."""
+    cache_dir = "/home/coder/.cache/mongodb-binaries"
+    candidates = glob.glob(os.path.join(cache_dir, "mongod*"))
+    for c in candidates:
+        if os.path.isfile(c) and not c.endswith(".md5"):
+            return c
+    return None
 
 
 def _wait_for_mongo(uri: str, timeout: float = 30.0) -> bool:
@@ -29,10 +40,8 @@ def _wait_for_mongo(uri: str, timeout: float = 30.0) -> bool:
 def mongod():
     """Start an ephemeral mongod process."""
     import shutil
-    binary = "/home/coder/.cache/mongodb-binaries/mongod-arm64-ubuntu-6.0.14"
-    if not os.path.isfile(binary):
-        binary = "/home/coder/.cache/mongodb-binaries/mongod-x86_64-ubuntu-6.0.14"
-    if not os.path.isfile(binary):
+    binary = _find_mongod()
+    if not binary:
         pytest.skip("mongod binary not found (run npm run prefetch:mongo)")
 
     db_path = tempfile.mkdtemp(prefix="mongo-mem-")
