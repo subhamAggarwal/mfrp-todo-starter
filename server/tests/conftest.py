@@ -52,7 +52,8 @@ def mongod():
 
     proc = subprocess.Popen(
         [binary, "--port", str(port), "--dbpath", db_path,
-         "--storageEngine", "ephemeralForTest", "--bind_ip", "127.0.0.1", "--noauth"],
+         "--wiredTigerCacheSizeGB", "0.25",
+         "--bind_ip", "127.0.0.1", "--noauth"],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
 
@@ -95,9 +96,15 @@ async def client(app):
         yield ac
 
 
+@pytest.fixture(scope="session")
+def _admin_mongo_client(mongod):
+    """Shared MongoClient — creating one per test leaks monitor threads."""
+    client = MongoClient(mongod, serverSelectionTimeoutMS=5000, maxPoolSize=4)
+    yield client
+    client.close()
+
+
 @pytest.fixture(autouse=True)
-def clean_db(mongod):
-    mongo_client = MongoClient(mongod, serverSelectionTimeoutMS=5000)
-    mongo_client["test"]["todos"].drop()
-    mongo_client.close()
+def clean_db(_admin_mongo_client):
+    _admin_mongo_client["test"]["todos"].drop()
     yield
